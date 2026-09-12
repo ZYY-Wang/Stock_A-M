@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>东方财富接口测试</title><link rel="stylesheet" href="/dfcf-test.css">
+</head>
+<body>
+  <header><div><h1>东方财富接口测试</h1><p>独立诊断页 · 不修改正式行情数据</p></div><a href="/">返回板块雷达</a></header>
+  <main>
+    <section class="intro">
+      <h2>关 VPN 前后对比</h2>
+      <ol><li>VPN 开启时选择“VPN开启”，点一次开始测试。</li><li>保持本地网页和终端运行，关闭 VPN。</li><li>选择“VPN关闭”，再点一次。页面会自动保存结果，刷新网页也不会丢。</li></ol>
+      <p>测试会以直连方式访问东方财富的指数当前行情（4个指数）和A股行情列表（首100只），不读取系统中残留的代理设置，也不会写入正式行情表。</p>
+      <div class="controls"><label>本次网络状态 <select id="network-label"><option>VPN开启</option><option>VPN关闭</option><option>未标注</option></select></label><button id="run-test">开始测试</button></div>
+      <p id="run-status" role="status">等待测试</p>
+    </section>
+    <section id="latest" hidden>
+      <div class="summary"><span id="summary-badge"></span><div><h2 id="summary-title"></h2><p id="summary-text"></p><p id="summary-time"></p></div></div>
+      <h2>指数当前行情</h2><div class="table-wrap"><table><thead><tr><th>指数</th><th>最新</th><th>涨跌</th><th>今开 / 最高 / 最低</th><th>成交量 / 成交额</th><th>源端时间</th><th>连接耗时</th><th>结果</th></tr></thead><tbody id="index-rows"></tbody></table></div>
+      <h2>A股行情接口</h2><div id="stocks-result"></div><div class="table-wrap"><table><thead><tr><th>代码</th><th>名称</th><th>最新</th><th>涨跌幅</th><th>成交额</th></tr></thead><tbody id="stock-rows"></tbody></table></div>
+    </section>
+    <section><h2>本机测试记录</h2><p class="muted">最多保留50次，下面显示最近20次。数据保存在本项目的 market.db。</p><div id="history"></div></section>
+  </main>
+  <script src="/dfcf-test.js"></script>
+</body></html>

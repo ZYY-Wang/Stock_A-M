@@ -1,0 +1,21 @@
+[monitor]
+streak_threshold = 3
+top_n = 30
+exclude_st = false
+
+[retention]
+intraday_days = 180
+reports_days = 180
+logs_days = 30
+archive_grace_days = 14
+max_storage_gb = 5
+preserve_daily_close = true
+
+# 代码可按需增删；名称仅用于接口返回缺失时的兜底展示。
+[indices]
+"000001" = "上证指数"
+"399001" = "深证成指"
+"399006" = "创业板指"
+"000300" = "沪深300"
+"000905" = "中证500"
+"000852" = "中证1000"

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>板块雷达</title>
+  <link rel="stylesheet" href="/app.css?v=20260912-5">
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+</head>
+<body>
+  <header>
+    <div><h1>板块雷达</h1><p id="stamp">等待数据</p><p id="sources">数据来源：等待加载</p></div>
+    <nav><button class="active" data-page="radar">板块雷达</button><button data-page="watch">关注池</button><a href="/dfcf-test">东方财富测试</a></nav>
+    <button id="refresh">立即刷新</button>
+  </header>
+  <main>
+    <section class="panel search-panel">
+      <form id="stock-search-form"><label for="stock-search">搜索股票</label><input id="stock-search" type="search" maxlength="80" placeholder="输入股票名称或代码，如 华工科技 / 000988" autocomplete="off"><button type="submit">搜索</button></form>
+      <div id="stock-search-results" hidden><p id="stock-search-status" class="subtle" role="status"></p><div class="table-wrap"><table><thead><tr><th>代码</th><th>股票</th><th>价格</th><th>涨跌幅</th><th></th></tr></thead><tbody id="stock-search-rows"></tbody></table></div></div>
+    </section>
+    <section id="radar-page">
+      <div class="metrics">
+        <article class="market-combined"><div class="market-combined-values"><div class="sh-index-block"><span>上证指数</span><strong id="sh-index"><b id="sh-index-close">—</b><small id="sh-index-change">—</small></strong></div><div><span>沪深京A股 · 涨 / 平 / 跌</span><strong id="breadth"><b id="breadth-up" class="up">—</b> / <b id="breadth-flat">—</b> / <b id="breadth-down" class="down">—</b></strong></div><div class="sh-turnover"><p><span>成交额</span><b id="market-amount">—</b></p><p id="amount-change-wrap"><span id="amount-change-label">比昨日</span><b id="amount-change">—</b></p></div></div><p class="subtle market-source-line"><time id="sh-index-stamp">等待数据</time><span aria-hidden="true">｜</span><a class="source-link" href="https://quote.eastmoney.com/stockhotmap/" target="_blank" rel="noopener noreferrer">东方财富大盘星图</a></p></article>
+      </div>
+      <div class="toolbar">
+        <div><button class="period active" data-period="1">今日</button><button class="period" data-period="5">5日</button><button class="period" data-period="10">10日</button></div>
+        <div><button class="heat-kind active" data-kind="industry">行业资金流（前10/后10）</button><button class="heat-kind" data-kind="concept">概念资金流（前10/后10）</button></div>
+        <span id="heat-legend">面积＝主力净额｜红入绿出</span>
+      </div>
+      <div class="dashboard-grid">
+        <section class="panel heat-panel"><h2 id="heat-title">行业热力图</h2><div id="heatmap"></div></section>
+      </div>
+      <section class="panel detail-panel">
+        <div class="panel-title"><div><h2 id="detail-name">选择一个板块</h2><p id="detail-meta">点击热力图查看内部强势个股</p></div><button id="watch-sector" disabled>关注板块</button></div>
+        <div class="stock-filters" aria-label="股票市场筛选">
+          <div class="market-buttons">
+            <button class="market active" data-market="all">全部</button>
+            <button class="market" data-market="main">主板（普通）</button>
+            <button class="market" data-market="gem">创业板</button>
+            <button class="market" data-market="star">科创板</button>
+            <button class="market" data-market="bse">北交所</button>
+          </div>
+          <label><input id="exclude-st" type="checkbox"> 排除 ST</label>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>代码</th><th>股票</th><th>涨跌幅</th><th>价格</th><th>成交额</th><th>换手率</th><th>市盈率</th><th></th></tr></thead><tbody id="stocks"><tr><td colspan="8" class="empty">尚未选择板块</td></tr></tbody></table></div>
+      </section>
+      <section class="panel market-signals market-signals-bottom">
+        <div class="panel-title"><h2>大盘异动</h2><button id="refresh-board-activity">更新大盘异动</button></div>
+        <p id="board-activity-status" class="subtle" role="status">等待读取缓存</p>
+        <p class="subtle">来源：东方财富｜前30｜板块可能重叠</p>
+        <div class="table-wrap"><table><thead><tr><th>板块</th><th>涨跌幅</th><th>主力净流入</th><th>异动总次数</th><th>异动最频繁个股</th><th>主要异动类型</th><th>关注</th></tr></thead><tbody id="board-activity-rows"></tbody></table></div>
+      </section>
+    </section>
+    <section id="watch-page" hidden>
+      <section class="panel"><div class="panel-title watch-title-row"><h2>关注池 · 3个月</h2><div class="watch-title-tools"><span id="watch-link-status" hidden></span><span class="subtle">行情：东方财富 / 本地缓存｜期限与关联：本地</span><button id="clear-watch-selection">清除高亮</button><button id="refresh-watch-links">更新关联</button></div></div>
+        <div class="watch-grid">
+          <section><h3 id="watch-sector-count">板块</h3><div class="table-wrap"><table><thead><tr><th>名称 / 代码</th><th>最新</th><th id="watch-sector-sort-head" aria-sort="descending"><button class="watch-sort" data-watch-sort="sector">今日涨跌 ▼</button></th><th>关注至</th><th></th></tr></thead><tbody id="watch-sectors"></tbody></table></div></section>
+          <section><h3 id="watch-stock-count">个股</h3><div class="table-wrap"><table><thead><tr><th>名称 / 代码</th><th>最新价</th><th id="watch-stock-sort-head" aria-sort="descending"><button class="watch-sort" data-watch-sort="stock">今日涨跌 ▼</button></th><th>关注至</th><th></th></tr></thead><tbody id="watch-stocks"></tbody></table></div></section>
+        </div>
+      </section>
+    </section>
+  </main>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <dialog id="stock-dialog" aria-labelledby="stock-dialog-title">
+    <div class="panel-title"><h2 id="stock-dialog-title">个股速览</h2><button id="close-stock-dialog">关闭 ×</button></div>
+    <p id="stock-dialog-status" class="subtle" role="status"></p>
+    <div class="detail-actions"><button id="refresh-stock-quote">更新行情</button><button id="refresh-stock-detail">更新日线</button><button id="watch-stock-detail">加入关注池</button></div>
+    <div id="stock-quick-metrics" class="stock-quick-grid"></div>
+    <p id="stock-detail-metrics" class="detail-summary"></p>
+    <div id="stock-sector-tags" class="stock-sector-tags"></div>
+    <div class="detail-chart-title"><h3>价格走势</h3><div><button class="detail-range" data-range="20">20日</button><button class="detail-range active" data-range="60">60日</button><button class="detail-range" data-range="120">120日</button></div></div>
+    <div id="stock-price-chart" style="height:330px"></div>
+    <div id="stock-volume-chart" style="height:180px"></div><p class="subtle">东方财富｜20日均量本地计算</p>
+    <div class="detail-chart-title"><h3>相对表现</h3><label>对比 <select id="stock-comparison"></select></label></div>
+    <p id="stock-comparison-note" class="subtle"></p>
+    <div id="stock-compare-chart" style="height:250px"></div>
+    <p id="stock-detail-links"></p>
+    <p class="subtle">历史数据，仅供参考｜外部资料不下载｜缓存自动清理</p>
+  </dialog>
+  <script src="/app.js?v=20260912-5"></script>
+  <script src="/detail.js?v=20260912-6"></script>
+</body>
+</html>
