@@ -39,7 +39,8 @@ python -m stock_monitor.web --root "C:\Users\WZYY\Documents\ChatGPT\stock monito
 节假日仍可能触发，因此推荐后续接入交易日历校验。数据仅供研究和监测，不构成投资建议。
 
 界面展示：
-<img width="1874" height="770" alt="image" src="https://github.com/user-attachments/assets/6f80d8a2-1454-43e2-84b1-8a6617e8202e" />
+<img width="1884" height="834" alt="0d19ad6f-fa98-49e8-a1ee-889a7b2fc93d" src="https://github.com/user-attachments/assets/498479f3-3776-4a02-9caa-ed7c45b85ad3" />
+
 <img width="1874" height="770" alt="image" src="https://github.com/user-attachments/assets/23b66e5c-a162-4da1-84a0-9edcdc4b9c1d" />
 
 
